@@ -14,7 +14,7 @@ from __future__ import annotations
 import os, sys, time, json, dotenv
 from typing import Optional, Dict, Any, Literal
 import requests
-from stream_audio import MediaPlayer
+from .stream_audio import MediaPlayer
 
 from dataclasses import dataclass
 
@@ -141,7 +141,7 @@ def generate_song(
 
     payload: Dict[str, Any] = {}
     # The docs show either topic (simple mode) or prompt (custom mode).
-    elif topic:
+    if topic:
         payload["topic"] = topic
     else:
         raise ValueError("Either 'prompt' or 'topic' must be provided.")
