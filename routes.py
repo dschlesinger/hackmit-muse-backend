@@ -51,17 +51,19 @@ def send_ascii_image(
     image_url: str, # Assumes local host or remote
 ) -> None:
 
+    aspect_ratio = 2.2
+
     try:
 
         img = Image.open(image_url)
 
         width, height = img.size
 
-        columns = (5 * width) // height
+        columns = aspect_ratio * (5 * width) // height
 
         my_art = from_image(image_url)
 
-        t = my_art.to_terminal(columns=columns, monochrome=True)
+        t = my_art.to_terminal(columns=columns, width_ratio=aspect_ratio, monochrome=True)
 
     except Exception as e:
 
