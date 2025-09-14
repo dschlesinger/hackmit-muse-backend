@@ -20,10 +20,10 @@ class Band:
 class BlinkDetector:
     def __init__(self, 
                  threshold_multiplier=4.0,
-                 min_blink_interval=0.05,
-                 frontal_channels=[1, 3],
+                 min_blink_interval=0.1,
+                 frontal_channels=[1, 2],
                  baseline_duration=1,
-                 blink_duration_range=(0.05, 0.5)):
+                 blink_duration_range=(0.1, 0.5)):
         
         self.threshold_multiplier = threshold_multiplier
         self.min_blink_interval = min_blink_interval
@@ -45,11 +45,10 @@ class BlinkDetector:
         self.blink_callback = None
         
     def set_blink_callback(self, callback_function):
-        """Set a callback function to be called when a blink is detected"""
+        # Blink callback
         self.blink_callback = callback_function
         
     def update_baseline(self, eeg_data):
-        """Update the baseline statistics from clean EEG data"""
         # Use frontal channels for baseline calculation
         frontal_data = eeg_data[:, self.frontal_channels]
         
@@ -286,10 +285,9 @@ blink_detector = BlinkDetector(
     frontal_channels=[1, 2]     # AF7 and AF8 channels
 )
 
-def music_control_callback(change_info):
+def music_control_callback(change_info, blinkstate=0):
     """
     Callback function to handle music control based on brain state changes.
-    Replace this with your actual music manipulation code.
     """
     if change_info['trigger']:
         trigger_type = change_info['trigger_type']
@@ -305,6 +303,8 @@ def music_control_callback(change_info):
             print("   → Suggestion: Energetic, rhythmic music")
         elif trigger_type == 'stress_increase':
             print("   → Suggestion: Calming, ambient music")
+    elif blinkstate:
+        print("blinked")
 
 def blink_control_callback():
     """
