@@ -21,6 +21,7 @@ import os
 # Import Suno utilities (assuming they're in the same directory)
 from suno_utils.suno import generate_song, await_check_status, StatusCheck
 from suno_utils.stream_audio import MediaPlayer
+import routes
 
 class Band:
     Delta = 0
@@ -76,7 +77,7 @@ class BlinkDetector:
                  min_blink_interval=0.1,
                  frontal_channels=[1, 2],
                  baseline_duration=1,
-                 blink_duration_range=(0.1, 0.5)):
+                 blink_duration_range=(0.03, 0.5)):
         
         self.threshold_multiplier = threshold_multiplier
         self.min_blink_interval = min_blink_interval
@@ -292,16 +293,16 @@ class MusicQueueManager:
         # Pre-generated songs (placeholder URLs)
         self.pregenerated_songs = {
             BrainState.RELAXATION: [
-                Song("pre_relax_1", "https://example.com/calm1.mp3", BrainState.RELAXATION, 180, "Calm Waters", True),
-                Song("pre_relax_2", "https://example.com/calm2.mp3", BrainState.RELAXATION, 200, "Peaceful Mind", True),
+                Song("pre_relax_1", "start_music/concentration_1.mp3", BrainState.RELAXATION, 180, "Calm Waters", True),
+                Song("pre_relax_2", "start_music/concentration_2.mp3", BrainState.RELAXATION, 200, "Peaceful Mind", True),
             ],
             BrainState.CONCENTRATION: [
-                Song("pre_focus_1", "https://example.com/focus1.mp3", BrainState.CONCENTRATION, 190, "Deep Focus", True),
-                Song("pre_focus_2", "https://example.com/focus2.mp3", BrainState.CONCENTRATION, 210, "Mental Clarity", True),
+                Song("pre_focus_1", "start_music/concentration_1.mp3", BrainState.CONCENTRATION, 190, "Deep Focus", True),
+                Song("pre_focus_2", "start_music/concentration_2.mp3", BrainState.CONCENTRATION, 210, "Mental Clarity", True),
             ],
             BrainState.STRESS: [
-                Song("pre_stress_1", "https://example.com/calm3.mp3", BrainState.STRESS, 170, "Stress Relief", True),
-                Song("pre_stress_2", "https://example.com/calm4.mp3", BrainState.STRESS, 195, "Anxiety Ease", True),
+                Song("pre_stress_1", "start_music/concentration_1.mp3", BrainState.STRESS, 170, "Stress Relief", True),
+                Song("pre_stress_2", "start_music/concentration_2.mp3", BrainState.STRESS, 195, "Anxiety Ease", True),
             ]
         }
         
@@ -428,12 +429,16 @@ class MusicQueueManager:
             song = self.get_pregenerated_song(BrainState.RELAXATION)  # Default fallback
             if song:
                 print(f"🎵 No songs in queue, playing pregenerated: {song.title}")
+                print("sending to glasses")
+                routes.change_song_glasses(song.title, song.brain_state.value)
                 self.current_player = MediaPlayer(song.url)
                 self.current_player.play()
                 return
         
         song = self.queue.popleft()
         print(f"🎵 Now playing: {song.title} ({song.brain_state.value}) - {song.duration:.1f}s")
+        print("sending to glasses")
+        routes.change_song_glasses(song.title, song.brain_state.value)
         
         try:
             self.current_player = MediaPlayer(song.url)
@@ -604,6 +609,8 @@ if __name__ == "__main__":
     initial_song = system.music_manager.get_pregenerated_song(BrainState.RELAXATION)
     if initial_song:
         print(f"🎵 Starting with pregenerated music: {initial_song.title}")
+        print("sending to glasses")
+        routes.change_song_glasses(initial_song.title, initial_song.brain_state.value)
         system.music_manager.current_player = MediaPlayer(initial_song.url)
         system.music_manager.current_player.play()
 
