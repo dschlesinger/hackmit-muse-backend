@@ -1,0 +1,4 @@
+requests
+muselsl
+dotenv
+python-vlc
