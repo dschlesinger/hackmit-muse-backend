@@ -141,8 +141,6 @@ def generate_song(
 
     payload: Dict[str, Any] = {}
     # The docs show either topic (simple mode) or prompt (custom mode).
-    if prompt:
-        payload["prompt"] = prompt
     elif topic:
         payload["topic"] = topic
     else:
