@@ -2,3 +2,4 @@ requests
 muselsl
 dotenv
 python-vlc
+ascii-magic

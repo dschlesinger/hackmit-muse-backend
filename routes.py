@@ -1,4 +1,6 @@
 import requests, time, os
+from ascii_magic import AsciiArt, from_image
+from PIL import Image
 
 # Send on Song change
 def change_song_glasses(
@@ -50,15 +52,14 @@ def send_ascii_image(
 ) -> None:
 
     try:
-        img_path = 'wider.jpeg'
 
-        img = Image.open(img_path)
+        img = Image.open(image_url)
 
         width, height = img.size
 
         columns = (5 * width) // height
 
-        my_art = from_image(img_path)
+        my_art = from_image(image_url)
 
         t = my_art.to_terminal(columns=columns, monochrome=True)
 
@@ -88,7 +89,7 @@ if __name__ == '__main__':
     print('Sending song')
 
     # Test song
-    change_song_glasses(song='Seven Nation Army', 'The White Stripes')
+    change_song_glasses(song='Seven Nation Army', author='The White Stripes')
 
     print('Sleep for 3 seconds')
 
@@ -103,11 +104,11 @@ if __name__ == '__main__':
     time.sleep(6)
 
     # Change here
-    image_url = 'image.png'
+    image_url = '../image.png'
 
     if os.path.exists(image_url):
 
-        send_ascii_art(image_url)
+        send_ascii_image(image_url)
 
     else:
         print('Add a image.png or smth')
