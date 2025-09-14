@@ -1,6 +1,7 @@
 import requests, time, os
-from ascii_magic import AsciiArt, from_image
+from ascii_magic import AsciiArt, from_image, from_url
 from PIL import Image
+from io import BytesIO
 
 # Send on Song change
 def change_song_glasses(
@@ -55,13 +56,23 @@ def send_ascii_image(
 
     try:
 
-        img = Image.open(image_url)
+        if image_url.startswith('http'):
+
+            response = requests.get(image_url)
+
+            img = Image.open(BytesIO(response.content))
+
+            my_art = from_url(image_url)
+        
+        else:
+
+            img = Image.open(image_url)
+
+            my_art = from_image(image_url)
 
         width, height = img.size
 
         columns = aspect_ratio * (5 * width) // height
-
-        my_art = from_image(image_url)
 
         t = my_art.to_terminal(columns=columns, width_ratio=aspect_ratio, monochrome=True)
 
@@ -114,3 +125,8 @@ if __name__ == '__main__':
 
     else:
         print('Add a image.png or smth')
+
+    print('Sleeping for 3')
+
+    # test remote ascii art
+    send_ascii_image('https://cdn1.suno.ai/image_01088ec0-8e8a-4d98-827d-c3359a8aef32.jpeg')
