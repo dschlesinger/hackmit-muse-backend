@@ -34,6 +34,7 @@ class StatusCheck:
     audio_url: str
     cover_img_url: str
     song_length: float
+    title: str
 
 def await_check_status(
     clip_id: str = None,
@@ -112,6 +113,7 @@ def await_check_status(
                 audio_url=clip.get('audio_url'),
                 cover_img_url=clip.get('image_url'),
                 song_length=clip['metadata']['duration'],
+                title=clip['title'],
             )  
 
         # If error

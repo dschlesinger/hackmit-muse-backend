@@ -350,7 +350,7 @@ class MusicQueueManager:
                     url=clip_result.audio_url,
                     brain_state=brain_state,
                     duration=clip_result.song_length,
-                    title=f"Generated {brain_state.value.title()} Music"
+                    title=clip_result.title
                 )
                 print(f"✅ Generated song for {brain_state.value}: {song.duration:.1f}s")
                 return song
@@ -369,7 +369,7 @@ class MusicQueueManager:
                         url=clip_result.audio_url,
                         brain_state=brain_state,
                         duration=clip_result.song_length,
-                        title=f"Generated {brain_state.value.title()} Music (Retry)"
+                        title=clip_result.title
                     )
                     print(f"✅ Retry successful for {brain_state.value}: {song.duration:.1f}s")
                     return song
